@@ -1,0 +1,3 @@
+Timestamp,WIB_Time,Status,Equity,Cash,Open_Positions,Actions_Count,Errors_Count,Message
+1794108269,2026-11-08 10:24:29 WIB,partial_error,100000000.0,100000000.0,0,0,6,
+1794108296,2026-11-08 10:24:56 WIB,success,100000000.0,100000000.0,0,0,0,

@@ -276,3 +276,4 @@ def evaluasi_sinyal_bar(
             "reason": "Belum memenuhi seluruh syarat masuk strategi.",
             "metrics": metrics
         }
+

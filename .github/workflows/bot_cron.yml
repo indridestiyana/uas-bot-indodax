@@ -1,4 +1,4 @@
-name: Indodax Bot Hourly Cron Scheduler
+  name: Indodax Bot Hourly Cron Scheduler
 
 on:
   schedule:
@@ -35,3 +35,4 @@ jobs:
             exit 1
           fi
           echo "Eksekusi tick berhasil diselesaikan."
+

@@ -201,3 +201,4 @@ function renderSnapshotsTable(snaps) {
     tbody.appendChild(tr);
   });
 }
+

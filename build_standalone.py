@@ -97,3 +97,4 @@ window.addEventListener('DOMContentLoaded', () => {{
 
 if __name__ == "__main__":
     build_standalone_html()
+

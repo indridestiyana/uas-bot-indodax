@@ -155,3 +155,4 @@ class RiskManager:
             return False, f"Sisa kas (Rp{kas_tersedia:,.0f}) atau alokasi (Rp{alokasi_idr:,.0f}) kurang dari minimum order Rp25.000.", 0.0
 
         return True, "Lolos seluruh kriteria risk management.", alokasi_idr
+

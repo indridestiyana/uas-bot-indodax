@@ -345,3 +345,4 @@ if __name__ == "__main__":
     print("Testing bot tick locally...")
     res = run_bot_tick(trigger_source="local_cli")
     print("Result:", json.dumps(res, indent=2))
+

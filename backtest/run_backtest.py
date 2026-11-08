@@ -39,7 +39,7 @@ def muat_median_spread(data_dir: str) -> float:
             with open(path, "r", encoding="utf-8") as f:
                 snaps = json.load(f)
                 spreads = [s.get("spread_pct", DEFAULT_SPREAD_PCT) for s in snaps if s.get("spread_pct", 0) > 0]
-                if spreads:
+                if spreads:     
                     spreads.sort()
                     return spreads[len(spreads) // 2]
         except Exception:

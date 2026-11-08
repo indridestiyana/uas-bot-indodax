@@ -22,6 +22,7 @@ LOCAL_STATE_FILE = os.path.join(
     "data",
     "forward_test_state.json"
 )
+TMP_STATE_FILE = "/tmp/forward_test_state.json"
 
 def create_default_state() -> Dict[str, Any]:
     """State awal bot dengan modal virtual Rp100.000.000."""
@@ -73,24 +74,32 @@ class BotStorage:
                 print(f"[Storage Warning] Gagal membaca dari Cloud KV: {e}. Beralih ke berkas lokal.")
 
         # Fallback ke berkas lokal
-        if os.path.exists(LOCAL_STATE_FILE):
-            try:
-                with open(LOCAL_STATE_FILE, "r", encoding="utf-8") as f:
-                    return json.load(f)
-            except Exception:
-                pass
+        for filepath in (LOCAL_STATE_FILE, TMP_STATE_FILE):
+            if os.path.exists(filepath):
+                try:
+                    with open(filepath, "r", encoding="utf-8") as f:
+                        return json.load(f)
+                except Exception:
+                    pass
 
         return create_default_state()
 
     def save_state(self, state: Dict[str, Any]):
         """Menyimpan state bot ke Cloud Storage (Upstash/KV) dan Berkas Lokal."""
-        # 1. Simpan ke berkas lokal
-        try:
-            os.makedirs(os.path.dirname(LOCAL_STATE_FILE), exist_ok=True)
-            with open(LOCAL_STATE_FILE, "w", encoding="utf-8") as f:
-                json.dump(state, f, indent=2)
-        except Exception as e:
-            print(f"[Storage Error] Gagal simpan ke berkas lokal: {e}")
+        # 1. Simpan ke berkas lokal (dengan fallback /tmp untuk runtime serverless Vercel)
+        saved_locally = False
+        for filepath in (LOCAL_STATE_FILE, TMP_STATE_FILE):
+            try:
+                os.makedirs(os.path.dirname(filepath), exist_ok=True)
+                with open(filepath, "w", encoding="utf-8") as f:
+                    json.dump(state, f, indent=2)
+                saved_locally = True
+                break
+            except Exception:
+                continue
+
+        if not saved_locally:
+            print("[Storage Warning] Gagal simpan ke berkas lokal atau /tmp.")
 
         # 2. Simpan ke Cloud Storage jika tersedia
         if self.is_cloud_storage():
@@ -110,3 +119,4 @@ class BotStorage:
                     pass
             except Exception as e:
                 print(f"[Storage Error] Gagal simpan ke Cloud KV: {e}")
+
