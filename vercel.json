@@ -9,7 +9,7 @@
   "crons": [
     {
       "path": "/api/tick",
-      "schedule": "7 * * * *"
+      "schedule": "0 17 * * *"
     }
   ],
   "routes": [
