@@ -40,15 +40,13 @@ def export_all_to_csv():
             snapshots = json.load(f)
 
     # 1. Ekspor Log Transaksi Selesai (Closed Trades)
-    trades = fwd_data.get("closed_trades", [])
-    if not trades:
-        trades = bt_data.get("closed_trades", [])
-
+    # A. Transaksi Backtest 3 Tahun (1.781 trades) -> closed_trades.csv
+    bt_trades = bt_data.get("closed_trades", [])
     trades_csv = os.path.join(DATA_DIR, "closed_trades.csv")
     with open(trades_csv, "w", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
         writer.writerow(["Symbol", "Entry_Time", "Entry_Date", "Entry_Price", "Exit_Time", "Exit_Date", "Exit_Price", "Qty", "Cost_Basis", "Net_Proceeds", "PnL_Rp", "PnL_Pct", "Reason", "Hold_Hours"])
-        for t in trades:
+        for t in bt_trades:
             writer.writerow([
                 t.get("symbol"),
                 t.get("entry_time"),
@@ -65,7 +63,45 @@ def export_all_to_csv():
                 t.get("reason"),
                 t.get("hold_hours", 0)
             ])
-    print(f"[CSV] Berhasil ekspor {len(trades)} transaksi tertutup -> {trades_csv}")
+    print(f"[CSV] Berhasil ekspor {len(bt_trades)} transaksi backtest 3 tahun -> {trades_csv}")
+
+    # B. Transaksi Forward Test Live Dry Run -> closed_trades_forward_test.csv
+    fwd_trades = fwd_data.get("closed_trades", [])
+    fwd_trades_csv = os.path.join(DATA_DIR, "closed_trades_forward_test.csv")
+    with open(fwd_trades_csv, "w", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f)
+        writer.writerow(["Symbol", "Entry_Time", "Entry_Date", "Entry_Price", "Exit_Time", "Exit_Date", "Exit_Price", "Qty", "Cost_Basis", "Net_Proceeds", "PnL_Rp", "PnL_Pct", "Reason", "Hold_Hours", "Spread_Pct", "Slippage_Pct"])
+        for t in fwd_trades:
+            writer.writerow([
+                t.get("symbol"),
+                t.get("entry_time"),
+                t.get("entry_date"),
+                t.get("entry_price"),
+                t.get("exit_time"),
+                t.get("exit_date"),
+                t.get("exit_price"),
+                t.get("qty"),
+                t.get("cost_basis"),
+                t.get("net_proceeds"),
+                t.get("pnl_rp"),
+                t.get("pnl_pct"),
+                t.get("reason"),
+                t.get("hold_hours", 0),
+                t.get("spread_pct", 0),
+                t.get("slippage_pct", 0)
+            ])
+    print(f"[CSV] Berhasil ekspor {len(fwd_trades)} transaksi live forward test -> {fwd_trades_csv}")
+
+    # C. Gabungan Seluruh Transaksi -> closed_trades_all.csv
+    all_trades_csv = os.path.join(DATA_DIR, "closed_trades_all.csv")
+    with open(all_trades_csv, "w", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f)
+        writer.writerow(["Category", "Symbol", "Entry_Time", "Entry_Date", "Entry_Price", "Exit_Time", "Exit_Date", "Exit_Price", "Qty", "Cost_Basis", "Net_Proceeds", "PnL_Rp", "PnL_Pct", "Reason", "Hold_Hours"])
+        for t in bt_trades:
+            writer.writerow(["BACKTEST_3Y", t.get("symbol"), t.get("entry_time"), t.get("entry_date"), t.get("entry_price"), t.get("exit_time"), t.get("exit_date"), t.get("exit_price"), t.get("qty"), t.get("cost_basis"), t.get("net_proceeds"), t.get("pnl_rp"), t.get("pnl_pct"), t.get("reason"), t.get("hold_hours", 0)])
+        for t in fwd_trades:
+            writer.writerow(["FORWARD_TEST", t.get("symbol"), t.get("entry_time"), t.get("entry_date"), t.get("entry_price"), t.get("exit_time"), t.get("exit_date"), t.get("exit_price"), t.get("qty"), t.get("cost_basis"), t.get("net_proceeds"), t.get("pnl_rp"), t.get("pnl_pct"), t.get("reason"), t.get("hold_hours", 0)])
+    print(f"[CSV] Berhasil ekspor {len(bt_trades) + len(fwd_trades)} gabungan transaksi -> {all_trades_csv}")
 
     # 2. Ekspor Log Panggilan Bot & Error (Tick Logs)
     tick_logs = fwd_data.get("tick_logs", [])
