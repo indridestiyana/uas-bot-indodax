@@ -1,10 +1,13 @@
-  name: Indodax Bot Hourly Cron Scheduler
+name: Indodax Bot Hourly Cron Scheduler
 
 on:
   schedule:
     # Berjalan setiap 1 jam pada menit ke-7 (menghindari kemacetan menit ke-0 GitHub Actions)
     - cron: '7 * * * *'
-  workflow_dispatch: # Memungkinkan uji coba manual via tombol Run Workflow di GitHub
+  workflow_dispatch:
+  push:
+    branches:
+      - master
 
 jobs:
   trigger_bot:
@@ -35,4 +38,3 @@ jobs:
             exit 1
           fi
           echo "Eksekusi tick berhasil diselesaikan."
-
