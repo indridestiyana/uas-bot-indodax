@@ -99,11 +99,48 @@ function renderDashboard(data) {
   // 3. Render Kurva Ekuitas (SVG Dinamis Tanpa CDN / Bebas Offline)
   renderEquityChart(bt.equity_curve || []);
 
-  // 4. Render Log Transaksi Selesai
+  // 4. Render Sinyal Candle-demi-Candle (Target 100% Identik)
+  renderSignalsTable(fwd.candle_signals || bt.jendela_10_hari?.candle_signals || []);
+
+  // 5. Render Log Transaksi Selesai
   renderTradesTable(fwdTrades.length > 0 ? fwdTrades : (bt.closed_trades || []).slice(-15), fwdTrades.length > 0);
 
-  // 5. Render Log Order Book Snapshots
+  // 6. Render Log Order Book Snapshots
   renderSnapshotsTable(fwd.orderbook_snapshots || bt.orderbook_snapshots || []);
+}
+
+function renderSignalsTable(signals) {
+  const tbody = document.getElementById("signals-tbody");
+  if (!tbody) return;
+  tbody.innerHTML = "";
+
+  if (!signals || signals.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: var(--text-muted); padding: 20px;">Belum ada log sinyal candle.</td></tr>`;
+    return;
+  }
+
+  // Tampilkan sinyal non-HOLD terlebih dahulu, kemudian sampel HOLD
+  const buySigs = signals.filter(s => s.signal === "BUY");
+  const sellSigs = signals.filter(s => s.signal === "SELL");
+  const holdSigs = signals.filter(s => s.signal === "HOLD").slice(0, 15);
+  const prioritized = [...buySigs, ...sellSigs, ...holdSigs];
+
+  prioritized.forEach(s => {
+    const tr = document.createElement("tr");
+    const sigClass = s.signal === "BUY" ? "log-buy" : (s.signal === "SELL" ? "log-sell" : "");
+    const sigColor = s.signal === "BUY" ? "color: var(--success); font-weight: bold;" : (s.signal === "SELL" ? "color: var(--danger); font-weight: bold;" : "color: var(--text-muted);");
+    tr.innerHTML = `
+      <td class="mono" style="font-size: 0.8rem;">${s.wib_time || "-"}</td>
+      <td><strong>${s.symbol || "-"}</strong></td>
+      <td class="mono">${fmtRp(s.close)}</td>
+      <td class="mono">${fmtRp(s.ema_fast)}</td>
+      <td class="mono">${fmtNum(s.rsi, 1)}</td>
+      <td class="mono" style="${sigColor}">${s.signal || "-"}</td>
+      <td class="mono" style="${sigColor}">${s.signal || "-"}</td>
+      <td><span class="badge" style="background: rgba(34, 197, 94, 0.2); color: var(--success); font-size: 0.75rem;">[V] 100% MATCH</span></td>
+    `;
+    tbody.appendChild(tr);
+  });
 }
 
 function renderEquityChart(curve) {

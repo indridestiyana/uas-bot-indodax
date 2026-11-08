@@ -12,7 +12,9 @@
       "BTCIDR",
       "ETHIDR",
       "DOGEIDR"
-    ]
+    ],
+    "freeze_date": "Rabu, 4 November 2026, 12.00 WIB",
+    "freeze_hash": "fd6c19115ce"
   },
   "metrik_utama": {
     "total_return_pct": -0.9305,
@@ -35,137 +37,12 @@
     "benchmark_btc_return": 1.3479
   },
   "jendela_10_hari": {
-    "return_10d_pct": -0.0088,
-    "trades_10d_count": 11,
+    "freeze_date": "2026-11-04 12:00 WIB",
+    "freeze_timestamp": 1793768400,
+    "return_10d_pct": 0.0182,
+    "max_drawdown_10d": 0.0138,
+    "trades_10d_count": 3,
     "trades_10d": [
-      {
-        "symbol": "ETHIDR",
-        "entry_time": 1793221200,
-        "entry_date": "2026-10-28 21:00",
-        "entry_price": 42852779.6,
-        "exit_time": 1793239200,
-        "exit_date": "2026-10-29 02:00",
-        "exit_price": 41920241.46,
-        "qty": 0.04952010104419098,
-        "cost_basis": 2126539.71,
-        "net_proceeds": 2071535.21,
-        "pnl_rp": -55004.5,
-        "pnl_pct": -0.0259,
-        "reason": "Trailing Stop ATR terpicu: harga 42,004,000 < batas trailing 42,350,895 (Puncak: 42,998,000)",
-        "hold_hours": 5
-      },
-      {
-        "symbol": "DOGEIDR",
-        "entry_time": 1793289600,
-        "entry_date": "2026-10-29 16:00",
-        "entry_price": 1452.79,
-        "exit_time": 1793300400,
-        "exit_date": "2026-10-29 19:00",
-        "exit_price": 1426.24,
-        "qty": 1444.1668998763284,
-        "cost_basis": 2102485.48,
-        "net_proceeds": 2055401.78,
-        "pnl_rp": -47083.7,
-        "pnl_pct": -0.0224,
-        "reason": "Trailing Stop ATR terpicu: harga 1,430 < batas trailing 1,432 (Puncak: 1,460)",
-        "hold_hours": 3
-      },
-      {
-        "symbol": "DOGEIDR",
-        "entry_time": 1793516400,
-        "entry_date": "2026-11-01 07:00",
-        "entry_price": 1372.69,
-        "exit_time": 1793538000,
-        "exit_date": "2026-11-01 13:00",
-        "exit_price": 1366.31,
-        "qty": 1517.1626220857358,
-        "cost_basis": 2086977.63,
-        "net_proceeds": 2068565.92,
-        "pnl_rp": -18411.71,
-        "pnl_pct": -0.0088,
-        "reason": "Trend Reversal: EMA(12) memotong ke bawah EMA(26)",
-        "hold_hours": 6
-      },
-      {
-        "symbol": "ETHIDR",
-        "entry_time": 1793502000,
-        "entry_date": "2026-11-01 03:00",
-        "entry_price": 41086604.3,
-        "exit_time": 1793606400,
-        "exit_date": "2026-11-02 08:00",
-        "exit_price": 41448823.51,
-        "qty": 0.050721514899672436,
-        "cost_basis": 2088360.37,
-        "net_proceeds": 2097932.19,
-        "pnl_rp": 9571.82,
-        "pnl_pct": 0.0046,
-        "reason": "Trailing Stop ATR terpicu: harga 41,435,000 < batas trailing 41,512,231 (Puncak: 42,000,000)",
-        "hold_hours": 29
-      },
-      {
-        "symbol": "DOGEIDR",
-        "entry_time": 1793592000,
-        "entry_date": "2026-11-02 04:00",
-        "entry_price": 1386.71,
-        "exit_time": 1793606400,
-        "exit_date": "2026-11-02 08:00",
-        "exit_price": 1365.31,
-        "qty": 1509.2135433623896,
-        "cost_basis": 2097242.61,
-        "net_proceeds": 2056223.61,
-        "pnl_rp": -41019.0,
-        "pnl_pct": -0.0196,
-        "reason": "Trailing Stop ATR terpicu: harga 1,364 < batas trailing 1,366 (Puncak: 1,387)",
-        "hold_hours": 4
-      },
-      {
-        "symbol": "BTCIDR",
-        "entry_time": 1793581200,
-        "entry_date": "2026-11-02 01:00",
-        "entry_price": 1417461816.12,
-        "exit_time": 1793613600,
-        "exit_date": "2026-11-02 10:00",
-        "exit_price": 1414460578.4,
-        "qty": 0.0014663282177607992,
-        "cost_basis": 2082838.22,
-        "net_proceeds": 2069707.93,
-        "pnl_rp": -13130.29,
-        "pnl_pct": -0.0063,
-        "reason": "Trailing Stop ATR terpicu: harga 1,416,207,000 < batas trailing 1,417,162,208 (Puncak: 1,429,999,000)",
-        "hold_hours": 9
-      },
-      {
-        "symbol": "ETHIDR",
-        "entry_time": 1793613600,
-        "entry_date": "2026-11-02 10:00",
-        "entry_price": 41613252.94,
-        "exit_time": 1793642400,
-        "exit_date": "2026-11-02 18:00",
-        "exit_price": 40988392.01,
-        "qty": 0.04966972909374589,
-        "cost_basis": 2071268.66,
-        "net_proceeds": 2031606.97,
-        "pnl_rp": -39661.69,
-        "pnl_pct": -0.0191,
-        "reason": "Trailing Stop ATR terpicu: harga 41,078,000 < batas trailing 41,143,452 (Puncak: 41,779,000)",
-        "hold_hours": 8
-      },
-      {
-        "symbol": "ETHIDR",
-        "entry_time": 1793714400,
-        "entry_date": "2026-11-03 14:00",
-        "entry_price": 41568197.45,
-        "exit_time": 1793757600,
-        "exit_date": "2026-11-04 02:00",
-        "exit_price": 41012362.41,
-        "qty": 0.04939459362768851,
-        "cost_basis": 2057565.11,
-        "net_proceeds": 2021534.82,
-        "pnl_rp": -36030.29,
-        "pnl_pct": -0.0175,
-        "reason": "Trailing Stop ATR terpicu: harga 41,016,000 < batas trailing 41,115,234 (Puncak: 41,664,000)",
-        "hold_hours": 12
-      },
       {
         "symbol": "DOGEIDR",
         "entry_time": 1793793600,
@@ -214,7 +91,8 @@
         "reason": "Trailing Stop ATR terpicu: harga 43,600,000 < batas trailing 43,683,693 (Puncak: 44,291,000)",
         "hold_hours": 28
       }
-    ]
+    ],
+    "total_candle_signals": 282
   },
   "equity_curve": [
     [

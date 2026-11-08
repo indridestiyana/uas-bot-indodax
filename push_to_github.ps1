@@ -40,3 +40,4 @@ if ($LASTEXITCODE -eq 0) {
 } else {
     Write-Host "`n[PERINGATAN] Terjadi kendala saat push. Pastikan repositori GitHub sudah dibuat dan Anda sudah login ke Git." -ForegroundColor Red
 }
+

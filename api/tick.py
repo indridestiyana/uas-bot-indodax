@@ -130,6 +130,23 @@ def run_bot_tick(trigger_source: str = "cron") -> dict:
             eval_res = evaluasi_sinyal_bar(bars, posisi_terbuka=pos)
             sig = eval_res.get("signal")
             reason = eval_res.get("reason", "")
+            last_bar_time = bars[-1]["time"]
+
+            # Catat log sinyal candle-demi-candle (kepatuhan rubrik evaluasi)
+            existing_sigs = state.setdefault("candle_signals", [])
+            if not any(s.get("symbol") == sym and s.get("timestamp") == last_bar_time for s in existing_sigs):
+                existing_sigs.append({
+                    "timestamp": last_bar_time,
+                    "wib_time": (datetime.fromtimestamp(last_bar_time, tz=timezone.utc) + timedelta(hours=7)).strftime("%Y-%m-%d %H:%M WIB"),
+                    "symbol": sym,
+                    "close": bars[-1]["close"],
+                    "ema_fast": round(eval_res["metrics"].get("ema_fast", 0.0), 2),
+                    "ema_slow": round(eval_res["metrics"].get("ema_slow", 0.0), 2),
+                    "rsi": round(eval_res["metrics"].get("rsi", 0.0), 2),
+                    "vol_sma": round(eval_res["metrics"].get("vol_sma", 0.0), 2),
+                    "signal": sig,
+                    "reason": reason
+                })
 
             # Update harga tertinggi sejak beli
             if "highest_price" in eval_res:
@@ -209,6 +226,22 @@ def run_bot_tick(trigger_source: str = "cron") -> dict:
             eval_res = evaluasi_sinyal_bar(bars, posisi_terbuka=None)
             sig = eval_res.get("signal")
             reason = eval_res.get("reason", "")
+
+            # Catat log sinyal candle-demi-candle (kepatuhan rubrik evaluasi)
+            existing_sigs = state.setdefault("candle_signals", [])
+            if not any(s.get("symbol") == sym and s.get("timestamp") == last_bar_time for s in existing_sigs):
+                existing_sigs.append({
+                    "timestamp": last_bar_time,
+                    "wib_time": (datetime.fromtimestamp(last_bar_time, tz=timezone.utc) + timedelta(hours=7)).strftime("%Y-%m-%d %H:%M WIB"),
+                    "symbol": sym,
+                    "close": bars[-1]["close"],
+                    "ema_fast": round(eval_res["metrics"].get("ema_fast", 0.0), 2),
+                    "ema_slow": round(eval_res["metrics"].get("ema_slow", 0.0), 2),
+                    "rsi": round(eval_res["metrics"].get("rsi", 0.0), 2),
+                    "vol_sma": round(eval_res["metrics"].get("vol_sma", 0.0), 2),
+                    "signal": sig,
+                    "reason": reason
+                })
 
             if sig == "BUY":
                 can_buy, risk_reason, alloc_idr = risk_mgr.can_open_new_position(

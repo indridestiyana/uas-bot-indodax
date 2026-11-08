@@ -21,3 +21,4 @@ echo ===========================================================================
 echo  PENGUJIAN SELESAI. Tekan sembarang tombol untuk menutup jendela ini.
 echo ===============================================================================
 pause > nul
+

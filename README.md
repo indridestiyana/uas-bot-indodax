@@ -143,3 +143,41 @@ uas_bot_indodax/
    - **Kedalaman Order Book:** Pada jam malam (likuiditas rendah), pesanan dengan volume besar terdorong memakan antrian ask/bid level 2 dan level 3 (VWAP slippage).
 3. **Integritas Bebas Look-Ahead Bias:**
    Penerapan aturan pembuangan candle berjalan (`Time + tf > server_time`) dan pencatatan state idempotensi terbukti menjamin bahwa bot beroperasi secara realistis dan tidak pernah memanfaatkan data masa depan.
+
+---
+
+## 6. Jadwal Pelaksanaan & Kepatuhan Timeline UAS
+
+Sesuai tabel jadwal resmi Soal UAS Halaman 5:
+| Tahap | Rentang Waktu | Status & Hasil Penyelesaian |
+| :--- | :--- | :--- |
+| **Persiapan** | Senin 2 Nov &ndash; Rabu 4 Nov 2026, 12.00 WIB | Strategi tertulis, backtest &ge;3 tahun (26.280 bar), snapshot order book dikumpulkan, bot dideploy ke Vercel dan lolos uji koneksi Indodax. |
+| **Freeze Date** | **Rabu, 4 Nov 2026, 12.00 WIB** | Aturan, parameter, universe dibekukan. Bukti commit hash `fd6c19115ce` tercatat permanen di riwayat repositori git. |
+| **Forward Test** | Rabu 4 Nov 12.00 &ndash; Sabtu 14 Nov 2026, 12.00 WIB | Bot berjalan mandiri via cron per jam (`7 * * * *`) tanpa intervensi manusia dan tanpa perubahan aturan. |
+| **Pengumpulan** | **Sabtu, 14 Nov 2026, 23.59 WIB** | Paket arsip `UAS_25120200007_IndriDestiyana.zip` lengkap dengan `.git` utuh, link repositori GitHub publik, dan link dashboard Vercel. |
+
+---
+
+## 7. Referensi Resmi & Sumber Regulasi
+
+Seluruh parameter tarif, batasan API, dan kuota serverless dicek sebelum freeze date:
+1. **Dokumentasi API Publik Indodax:**  
+   URL: [https://github.com/btcid/indodax-official-api-docs](https://github.com/btcid/indodax-official-api-docs)  
+   Tanggal Akses: *2 November 2026*  
+   Catatan: Limit 180 request/menit, endpoint `/tradingview/history_v2`, `/api/depth`, `/api/pairs`, `/api/server_time`.
+2. **Rincian Biaya Transaksi Resmi Indodax:**  
+   URL: [https://help.indodax.com/hc/id/articles/4416650988697-Rincian-Biaya-Transaksi-di-Indodax](https://help.indodax.com/hc/id/articles/4416650988697-Rincian-Biaya-Transaksi-di-Indodax)  
+   Tanggal Akses: *2 November 2026*  
+   Catatan: Tarif taker all-in efektif 0.21% (termasuk PPh & PPN aset kripto). Minimum order Rp 25.000 pada mode Pro.
+3. **Dokumentasi Batas Durasi Vercel Functions:**  
+   URL: [https://vercel.com/docs/functions/limitations](https://vercel.com/docs/functions/limitations)  
+   Tanggal Akses: *2 November 2026*  
+   Catatan: Maksimum durasi eksekusi per pemanggilan serverless 300 detik pada paket Hobby.
+4. **Dokumentasi Vercel Cron Jobs & Kuota Paket:**  
+   URL: [https://vercel.com/docs/cron-jobs/usage-and-pricing](https://vercel.com/docs/cron-jobs/usage-and-pricing)  
+   Tanggal Akses: *2 November 2026*  
+   Catatan: Cron Vercel pada paket Hobby dibatasi 1x per hari (disetel pukul 00:00 WIB / 17:00 UTC). Penjadwal per jam dijalankan melalui GitHub Actions Cron (`7 * * * *`).
+5. **Dokumentasi Vercel KV / Upstash Redis Storage:**  
+   URL: [https://vercel.com/docs/storage](https://vercel.com/docs/storage)  
+   Tanggal Akses: *2 November 2026*  
+   Catatan: Digunakan sebagai layer persistensi REST non-blokir untuk serverless stateless.

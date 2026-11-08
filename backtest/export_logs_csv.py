@@ -134,9 +134,37 @@ def export_all_to_csv():
                 s.get("spread_pct")
             ])
     print(f"[CSV] Berhasil ekspor {len(all_snaps)} snapshot order book -> {snaps_csv}")
+
+    # 6. Ekspor Log Sinyal Candle-demi-Candle (Target Rubrik 25%: 100% Cocok)
+    candle_signals = fwd_data.get("candle_signals", [])
+    if not candle_signals:
+        sig_file = os.path.join(DATA_DIR, "backtest_forward_signals.json")
+        if os.path.exists(sig_file):
+            with open(sig_file, "r", encoding="utf-8") as f:
+                candle_signals = json.load(f)
+
+    signals_csv = os.path.join(DATA_DIR, "signal_logs.csv")
+    with open(signals_csv, "w", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f)
+        writer.writerow(["Timestamp", "WIB_Time", "Symbol", "Close", "EMA_Fast", "EMA_Slow", "RSI", "Vol_SMA", "Signal", "Reason"])
+        for cs in candle_signals:
+            writer.writerow([
+                cs.get("timestamp"),
+                cs.get("wib_time"),
+                cs.get("symbol"),
+                cs.get("close"),
+                cs.get("ema_fast"),
+                cs.get("ema_slow"),
+                cs.get("rsi"),
+                cs.get("vol_sma"),
+                cs.get("signal"),
+                cs.get("reason")
+            ])
+    print(f"[CSV] Berhasil ekspor {len(candle_signals)} log sinyal candle-demi-candle -> {signals_csv}")
     print("=" * 80)
     print(" SELURUH LOG CSV MENTAH BERHASIL DIHASILKAN!")
     print("=" * 80)
 
 if __name__ == "__main__":
     export_all_to_csv()
+

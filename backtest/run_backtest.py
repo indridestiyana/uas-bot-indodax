@@ -283,11 +283,43 @@ def jalankan_backtest():
 
     btc_return_pct = ((btc_last_price - btc_first_price) / btc_first_price) if btc_first_price else 0.0
 
-    sepuluh_hari_detik = 10 * 86400
-    cutoff_10d = t_end - sepuluh_hari_detik
-    trades_10d = [t for t in closed_trades if t["exit_time"] >= cutoff_10d]
-    eq_10d = [p for p in equity_curve if p[0] >= cutoff_10d]
-    ret_10d = (eq_10d[-1][1] - eq_10d[0][1]) / eq_10d[0][1] if len(eq_10d) >= 2 else 0.0
+    # -------------------------------------------------------------------------
+    # Evaluasi Jendela Forward Test (Sejak Freeze Date: Rabu, 4 Nov 2026 12:00 WIB)
+    # -------------------------------------------------------------------------
+    FREEZE_TIMESTAMP = 1793768400  # 4 Nov 2026 12:00:00 WIB
+    wib_tz = timezone(timedelta(hours=7))
+
+    trades_forward = [t for t in closed_trades if t["entry_time"] >= FREEZE_TIMESTAMP]
+    eq_forward = [p for p in equity_curve if p[0] >= FREEZE_TIMESTAMP]
+    ret_forward = (eq_forward[-1][1] - eq_forward[0][1]) / eq_forward[0][1] if len(eq_forward) >= 2 else 0.0
+    mdd_fwd, _, _ = hitung_mdd(eq_forward) if eq_forward else (0.0, "", "")
+
+    # Ekstraksi sinyal candle-demi-candle selama jendela forward test (Target Rubrik: 100% Identik)
+    candle_signals_backtest = []
+    for sym in symbols:
+        bars_s = symbol_bars[sym]
+        ind_s = symbol_indicators[sym]
+        for idx in range(len(bars_s)):
+            bar = bars_s[idx]
+            if bar["time"] >= FREEZE_TIMESTAMP:
+                eval_res = evaluasi_sinyal_bar(bars_s, posisi_terbuka=None, indicators=ind_s, bar_index=idx)
+                candle_signals_backtest.append({
+                    "timestamp": bar["time"],
+                    "wib_time": datetime.fromtimestamp(bar["time"], tz=wib_tz).strftime("%Y-%m-%d %H:%M WIB"),
+                    "symbol": sym,
+                    "close": bar["close"],
+                    "ema_fast": round(eval_res["metrics"].get("ema_fast", 0.0), 2),
+                    "ema_slow": round(eval_res["metrics"].get("ema_slow", 0.0), 2),
+                    "rsi": round(eval_res["metrics"].get("rsi", 0.0), 2),
+                    "vol_sma": round(eval_res["metrics"].get("vol_sma", 0.0), 2),
+                    "signal": eval_res["signal"],
+                    "reason": eval_res["reason"]
+                })
+
+    # Simpan berkas sinyal backtest jendela forward test
+    signals_file = os.path.join(data_dir, "backtest_forward_signals.json")
+    with open(signals_file, "w", encoding="utf-8") as f:
+        json.dump(candle_signals_backtest, f, indent=2)
 
     hasil_ringkas = {
         "meta": {
@@ -299,7 +331,9 @@ def jalankan_backtest():
             "end_date": datetime.fromtimestamp(t_end, tz=timezone.utc).strftime("%Y-%m-%d"),
             "durasi_tahun": round(years, 2),
             "timeframe": "1 Jam (tf=60)",
-            "universe": symbols
+            "universe": symbols,
+            "freeze_date": "Rabu, 4 November 2026, 12.00 WIB",
+            "freeze_hash": "fd6c19115ce"
         },
         "metrik_utama": {
             "total_return_pct": round(total_return_pct, 4),
@@ -322,9 +356,13 @@ def jalankan_backtest():
             "benchmark_btc_return": round(btc_return_pct, 4),
         },
         "jendela_10_hari": {
-            "return_10d_pct": round(ret_10d, 4),
-            "trades_10d_count": len(trades_10d),
-            "trades_10d": trades_10d
+            "freeze_date": "2026-11-04 12:00 WIB",
+            "freeze_timestamp": FREEZE_TIMESTAMP,
+            "return_10d_pct": round(ret_forward, 4),
+            "max_drawdown_10d": round(mdd_fwd, 4),
+            "trades_10d_count": len(trades_forward),
+            "trades_10d": trades_forward,
+            "total_candle_signals": len(candle_signals_backtest)
         },
         "equity_curve": [(p[0], round(p[1], 2)) for p in equity_curve[::6]],
         "daily_equity": daily_equity_log,
@@ -351,7 +389,7 @@ def jalankan_backtest():
     print(f"    - Spread Cost Est.   : Rp {total_spread_cost:,.0f}")
     print(f"    - Slippage Cost Est. : Rp {total_slippage_cost:,.0f}")
     print(f" 10. Benchmark BTC B&H   : {btc_return_pct*100:+.2f}%")
-    print(f" 11. Jendela 10 Hari Terakhir: Return {ret_10d*100:+.2f}%, Trades: {len(trades_10d)}")
+    print(f" 11. Jendela Forward Test (Sejak 4 Nov): Return {ret_forward*100:+.2f}%, Trades: {len(trades_forward)}, Signals Extracted: {len(candle_signals_backtest)}")
     print("=" * 80)
     print(f" Berkas ringkasan tersimpan di: {out_file}\n")
 

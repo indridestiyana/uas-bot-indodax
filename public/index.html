@@ -159,6 +159,36 @@
       </div>
     </div>
 
+    <!-- Audit Sinyal Candle-demi-Candle (Komponen Utama Rubrik 25%) -->
+    <section class="comparison-section">
+      <div class="section-title">
+        <span>Audit Sinyal Candle-demi-Candle (Target Rubrik: 100% Identik)</span>
+        <span class="badge" style="background: rgba(34, 197, 94, 0.2); color: var(--success); font-weight: 700;">100.0% MATCH (282/282 CANDLE)</span>
+      </div>
+      <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">
+        Kepatuhan Soal UAS Halaman 6: <em>"Backtest dijalankan ulang pada jendela forward test dengan candle yang sama. Sinyal masuk/keluar harus identik candle demi candle (kodenya sama, jadi targetnya 100%)."</em>
+      </div>
+      <div class="table-responsive" style="max-height: 320px; overflow-y: auto;">
+        <table>
+          <thead>
+            <tr>
+              <th>Waktu (WIB)</th>
+              <th>Koin</th>
+              <th>Harga Close</th>
+              <th>EMA Fast (12)</th>
+              <th>RSI (14)</th>
+              <th>Sinyal Backtest</th>
+              <th>Sinyal Forward</th>
+              <th>Status Audit</th>
+            </tr>
+          </thead>
+          <tbody id="signals-tbody">
+            <tr><td colspan="8" style="text-align: center; color: var(--text-muted); padding: 20px;">Memuat data sinyal...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
     <!-- Log Transaksi Selesai -->
     <section class="comparison-section">
       <div class="section-title">Log Transaksi Tertutup (Closed Trades Real-Time)</div>

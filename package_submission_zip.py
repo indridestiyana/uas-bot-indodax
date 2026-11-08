@@ -28,7 +28,7 @@ def make_submission_zip():
 
     # File / ekstensi yang diabaikan (hanya cache python)
     exclude_dirs = {"__pycache__", ".pytest_cache", "venv", ".venv"}
-    exclude_files = {".env", ".DS_Store", "Thumbs.db"}
+    exclude_files = {".env", ".DS_Store", "Thumbs.db", ZIP_NAME}
 
     total_files = 0
     with zipfile.ZipFile(OUTPUT_ZIP_PATH, "w", zipfile.ZIP_DEFLATED) as zipf:
@@ -62,3 +62,4 @@ def make_submission_zip():
 
 if __name__ == "__main__":
     make_submission_zip()
+

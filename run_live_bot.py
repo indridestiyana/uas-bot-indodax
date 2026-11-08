@@ -234,3 +234,4 @@ def jalankan_siklus_bot():
 
 if __name__ == "__main__":
     jalankan_siklus_bot()
+

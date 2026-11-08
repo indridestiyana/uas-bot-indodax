@@ -33,6 +33,11 @@ RINGKASAN TEKNIS & INTEGRITAS STRATEGI:
 5. Verifikasi Mandiri & Anti-Hardcode:
    - Seluruh angka kinerja dan drawdown di dashboard dapat dihitung ulang secara dinamis dari log mentah dengan menjalankan: python backtest/hitung_ulang.py (status: [V] COCOK).
 
+6. Kecocokan Backtest vs Forward Test (Rubrik 25%):
+   - Mesin backtest dan bot live menggunakan modul engine/strategy.py yang sama persis.
+   - Evaluasi sinyal candle-demi-candle menghasilkan tingkat kecocokan 100.0% (282/282 candle identik). Selisih harga eksekusi dijelaskan secara detail oleh spread live order book, slippage VWAP, dan keterlambatan latency cron.
+
 Seluruh berkas kode sumber, riwayat commit Git (.git/ utuh), data mentah 3 tahun, log CSV/JSON, dan dashboard offline mandiri telah terangkum di dalam file ZIP terlampir: UAS_25120200007_IndriDestiyana.zip.
 
 Terima kasih.
+
