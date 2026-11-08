@@ -1,0 +1,68 @@
+{
+  "initial_capital": 100000000.0,
+  "cash": 100000000.0,
+  "equity": 100000000.0,
+  "kill_switch": false,
+  "open_positions": {},
+  "closed_trades": [],
+  "processed_candles": {
+    "BTCIDR": 1794103200,
+    "ETHIDR": 1794103200,
+    "DOGEIDR": 1794103200
+  },
+  "daily_tracking": {
+    "date": "",
+    "start_equity": 100000000.0,
+    "min_equity": 100000000.0,
+    "breached": false
+  },
+  "daily_equity": {
+    "2026-11-08": 100000000.0
+  },
+  "tick_logs": [
+    {
+      "timestamp": 1794108269,
+      "wib_time": "2026-11-08 10:24:29 WIB",
+      "status": "partial_error",
+      "equity": 100000000.0,
+      "cash": 100000000.0,
+      "open_positions": 0,
+      "actions_count": 0,
+      "errors_count": 6
+    },
+    {
+      "timestamp": 1794108296,
+      "wib_time": "2026-11-08 10:24:56 WIB",
+      "status": "success",
+      "equity": 100000000.0,
+      "cash": 100000000.0,
+      "open_positions": 0,
+      "actions_count": 0,
+      "errors_count": 0
+    }
+  ],
+  "order_logs": [],
+  "orderbook_snapshots": [
+    {
+      "timestamp": 1794108296,
+      "symbol": "BTCIDR",
+      "best_bid": 1369721000.0,
+      "best_ask": 1370006000.0,
+      "spread_pct": 0.00020807157077974275
+    },
+    {
+      "timestamp": 1794108296,
+      "symbol": "ETHIDR",
+      "best_bid": 40400000.0,
+      "best_ask": 40426000.0,
+      "spread_pct": 0.0006435643564356436
+    },
+    {
+      "timestamp": 1794108296,
+      "symbol": "DOGEIDR",
+      "best_bid": 1285.0,
+      "best_ask": 1287.0,
+      "spread_pct": 0.0015564202334630351
+    }
+  ]
+}

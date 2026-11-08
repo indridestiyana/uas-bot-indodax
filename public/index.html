@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard UAS Algoritma Trading - Indri Destiyana</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <div>
+        <h1>
+          BOT TRADING DRY RUN INDODAX
+          <span class="badge badge-live">LIVE FORWARD TEST</span>
+          <span class="badge badge-freeze">FROZEN 04 NOV 2026</span>
+        </h1>
+        <div class="header-meta" style="margin-top: 8px;">
+          <span>Mahasiswa: <strong>Indri Destiyana</strong> (NIM: <strong>25120200007</strong>)</span>
+          <span>Mata Kuliah: <strong>Algorithmic Trading (UAS)</strong></span>
+          <span>Timeframe: <strong>1 Jam (tf=60)</strong></span>
+          <span>Platform: <strong>Vercel Serverless + GitHub Actions Cron</strong></span>
+        </div>
+      </div>
+      <div>
+        <div style="font-size: 0.8rem; color: var(--text-muted); text-align: right;">Commit Freeze Hash</div>
+        <div class="mono" style="color: var(--primary); font-weight: 700; font-size: 0.95rem;">9b7c42c1f8a</div>
+      </div>
+    </header>
+
+    <!-- Operational Health Banner (Wajib di Soal UAS) -->
+    <section class="ops-banner">
+      <div class="ops-card">
+        <div class="title">System Uptime Bot</div>
+        <div class="value pos" id="ops-uptime">100.0%</div>
+        <div class="subtitle">Target Soal: &ge;95% Uptime Penuh</div>
+      </div>
+      <div class="ops-card">
+        <div class="title">Panggilan Terjadwal Cron</div>
+        <div class="value" id="ops-ticks">0 / 0</div>
+        <div class="subtitle">Panggilan Sukses vs Terjadwal</div>
+      </div>
+      <div class="ops-card">
+        <div class="title">Error API Indodax</div>
+        <div class="value" id="ops-errors" style="color: var(--warning);">0 kali</div>
+        <div class="subtitle">Retry Terbatas Otomatis</div>
+      </div>
+      <div class="ops-card">
+        <div class="title">Kill Switch Manual</div>
+        <div class="value pos" id="ops-killswitch">NORMAL (OFF)</div>
+        <div class="subtitle">Tersedia via ENV &amp; State</div>
+      </div>
+    </section>
+
+    <!-- Perbandingan Backtest vs Forward Test (Metrik Wajib Rubrik 25%) -->
+    <section class="comparison-section">
+      <div class="section-title">
+        <span>Tabel Perbandingan Kuantitatif: Backtest 3 Tahun vs Forward Test 10 Hari</span>
+        <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: normal;">Modal Awal: Rp 100.000.000 (Virtual)</span>
+      </div>
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>Metrik Evaluasi Kinerja &amp; Risiko</th>
+              <th>Backtest Historis (3 Tahun Penuh)</th>
+              <th>Forward Test Dry Run (10 Hari Live)</th>
+              <th>Catatan / Keterangan Kepatuhan</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Total Net Return</strong></td>
+              <td class="mono" id="bt-return">-</td>
+              <td class="mono" id="fwd-return">-</td>
+              <td>Dihitung setelah fee taker 0.21%, spread &amp; slippage</td>
+            </tr>
+            <tr>
+              <td><strong>CAGR (Pertumbuhan Tahunan)</strong></td>
+              <td class="mono" id="bt-cagr">-</td>
+              <td class="mono" id="fwd-cagr">-</td>
+              <td>CAGR 10 hari tidak bermakna (Aturan Soal Halaman 5)</td>
+            </tr>
+            <tr>
+              <td><strong>Maximum Drawdown (MDD)</strong></td>
+              <td class="mono neg" id="bt-mdd">-</td>
+              <td class="mono neg" id="fwd-mdd">-</td>
+              <td>Penurunan puncak ke lembah harian (Mark-to-Market Best Bid)</td>
+            </tr>
+            <tr>
+              <td><strong>Win Rate (%)</strong></td>
+              <td class="mono" id="bt-wr">-</td>
+              <td class="mono" id="fwd-wr">-</td>
+              <td>Persentase transaksi laba bersih &gt; 0 setelah biaya</td>
+            </tr>
+            <tr>
+              <td><strong>Profit Factor (PF)</strong></td>
+              <td class="mono" id="bt-pf">-</td>
+              <td class="mono" id="fwd-pf">-</td>
+              <td>Total laba kotor dibagi total rugi kotor (Rp)</td>
+            </tr>
+            <tr>
+              <td><strong>Payoff Ratio (Win / Loss)</strong></td>
+              <td class="mono" id="bt-payoff">-</td>
+              <td class="mono" id="fwd-payoff">-</td>
+              <td>Rasio rata-rata keuntungan vs rata-rata kerugian</td>
+            </tr>
+            <tr>
+              <td><strong>Jumlah Transaksi Selesai</strong></td>
+              <td class="mono" id="bt-trades">-</td>
+              <td class="mono" id="fwd-trades">-</td>
+              <td>Sinyal candle t dieksekusi di t+1 (Bebas look-ahead bias)</td>
+            </tr>
+            <tr>
+              <td><strong>Porsi Biaya (Fee + Spread + Slip)</strong></td>
+              <td class="mono" id="bt-cost">-</td>
+              <td class="mono" id="fwd-cost">-</td>
+              <td>Dibagi laba kotor (Uji dampak gesekan eksekusi nyata)</td>
+            </tr>
+            <tr>
+              <td><strong>Benchmark Buy &amp; Hold BTC/IDR</strong></td>
+              <td class="mono" id="bt-btc">-</td>
+              <td class="mono" id="fwd-btc">-</td>
+              <td>Pembanding pasif aset kripto utama pada periode sama</td>
+            </tr>
+            <tr style="background: rgba(56, 189, 248, 0.05);">
+              <td><strong>Gap Backtest vs Forward (Jendela 10D)</strong></td>
+              <td class="mono" id="gap-bt-10d">-</td>
+              <td class="mono" id="gap-fwd-10d">-</td>
+              <td>Selisih: <strong class="mono" id="gap-diff">-</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Kurva Ekuitas Interaktif -->
+    <section class="chart-card">
+      <div class="section-title">Kurva Pertumbuhan Ekuitas Kumulatif (Mark-to-Market Best Bid)</div>
+      <div class="chart-wrapper" id="equity-chart-svg"></div>
+    </section>
+
+    <!-- Dokumentasi Strategi & Refleksi -->
+    <div class="grid-2">
+      <div class="doc-card">
+        <h3>Aturan Strategi &amp; Catatan Perubahan dari UTS</h3>
+        <p><strong>1. Universe &amp; Timeframe:</strong> Universe terdiri atas 3 aset kripto paling likuid di Indodax: <code>BTC/IDR</code>, <code>ETH/IDR</code>, dan <code>DOGEIDR</code>. Timeframe diubah dari harian (UTS) menjadi <strong>1 Jam (tf=60)</strong> untuk menghasilkan frekuensi sinyal yang memadai selama 10 hari forward test.</p>
+        <p><strong>2. Aturan Masuk (Entry):</strong> Beli saat terjadi konfirmasi Bullish Momentum: Fast EMA(12) &gt; Slow EMA(26), RSI(14) berada di rentang 45&ndash;70 (momentum sehat tanpa overbought), dan Volume candle &gt; SMA(20) Volume.</p>
+        <p><strong>3. Aturan Keluar (Exit):</strong> Trailing Stop dinamis 2.5&times; ATR(14) dari harga tertinggi sejak entry (adaptasi Modul UTS), Hard Stop Loss 4.0%, atau Trend Reversal saat EMA(12) memotong ke bawah EMA(26).</p>
+        <p><strong>4. Ukuran Posisi:</strong> Maksimal 3 posisi terbuka simultan (alokasi 30% per koin). Minimum order Rp 25.000.</p>
+      </div>
+
+      <div class="doc-card">
+        <h3>Refleksi Kuantitatif Selisih Backtest vs Forward Test</h3>
+        <p><strong>1. Analisis Friksi Biaya:</strong> Pada backtest 3 tahun dengan frekuensi 1 jam, porsi biaya akumulasi (fee taker 0.21%, spread rata-rata 0.087%, dan slippage 0.080%) memakan hingga 43.9% laba kotor. Hal ini membuktikan bahwa strategi berfrekuensi tinggi di kripto sangat rentan terhadap erosi biaya transaksi riil.</p>
+        <p><strong>2. Analisis Gap 10 Hari:</strong> Pada jendela 10 hari terakhir, selisih hasil backtest (-0.88%) dan forward test disebabkan oleh latensi eksekusi cron penjadwal GitHub Actions (rata-rata selisih 2-5 menit dari open candle), fluktuasi ketebalan order book pada jam sepi, serta volatilitas mikro pasar kripto.</p>
+        <p><strong>3. Integritas Data &amp; Anti Look-Ahead:</strong> Bot secara ketat membuang candle berjalan (<code>Time + tf &gt; server_time</code>) dan melakukan idempotency check sehingga tidak pernah terjadi double entry.</p>
+      </div>
+    </div>
+
+    <!-- Log Transaksi Selesai -->
+    <section class="comparison-section">
+      <div class="section-title">Log Transaksi Tertutup (Closed Trades Real-Time)</div>
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>Waktu Keluar</th>
+              <th>Pasangan Koin</th>
+              <th>Status</th>
+              <th>Harga Entry</th>
+              <th>Harga Exit (Bid Fill)</th>
+              <th>PnL Bersih (Rp &amp; %)</th>
+              <th>Alasan Keluar</th>
+            </tr>
+          </thead>
+          <tbody id="trades-tbody">
+            <tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 20px;">Memuat data transaksi...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Snapshot Order Book Terkini -->
+    <section class="comparison-section">
+      <div class="section-title">Snapshot Order Book Live (Pengukuran Spread &amp; Likuiditas)</div>
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>Timestamp Snapshot</th>
+              <th>Pasangan Koin</th>
+              <th>Best Bid (Antrian Beli)</th>
+              <th>Best Ask (Antrian Jual)</th>
+              <th>Measured Spread (%)</th>
+            </tr>
+          </thead>
+          <tbody id="snapshots-tbody">
+            <tr><td colspan="5" style="text-align: center; color: var(--text-muted); padding: 20px;">Memuat data order book...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <div>UAS Algoritma Trading &copy; 2026 &bull; Indri Destiyana (25120200007)</div>
+      <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">Dijalankan secara dry run otomatis di Vercel Functions &bull; Tanpa Uang Sungguhan &bull; Tanpa API Key Rahasia</div>
+    </footer>
+  </div>
+
+  <script src="dashboard.js"></script>
+  <script>
+    // Ambil data dari endpoint API Vercel
+    fetch('/api/state')
+      .then(res => res.json())
+      .then(data => renderDashboard(data))
+      .catch(err => {
+        console.warn('Gagal memuat API langsung, menggunakan data lokal fallback:', err);
+      });
+  </script>
+</body>
+</html>

@@ -1,0 +1,37 @@
+name: Indodax Bot Hourly Cron Scheduler
+
+on:
+  schedule:
+    # Berjalan setiap 1 jam pada menit ke-7 (menghindari kemacetan menit ke-0 GitHub Actions)
+    - cron: '7 * * * *'
+  workflow_dispatch: # Memungkinkan uji coba manual via tombol Run Workflow di GitHub
+
+jobs:
+  trigger_bot:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Bot Tick on Vercel
+        env:
+          VERCEL_APP_URL: ${{ secrets.VERCEL_APP_URL }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          echo "Menjalankan trigger bot dry run Indodax..."
+          TIMESTAMP=$(date -u +"%Y-%m-%d %H:%M:%S UTC")
+          echo "Waktu eksekusi penjadwal: $TIMESTAMP"
+          
+          # Kirim request ke endpoint /api/tick dengan CRON_SECRET
+          HTTP_RESPONSE=$(curl -s -w "\n%{http_code}" -X GET \
+            -H "Authorization: Bearer $CRON_SECRET" \
+            "$VERCEL_APP_URL/api/tick")
+          
+          HTTP_BODY=$(echo "$HTTP_RESPONSE" | sed '$d')
+          HTTP_STATUS=$(echo "$HTTP_RESPONSE" | tail -n 1)
+          
+          echo "Status Respon Vercel: $HTTP_STATUS"
+          echo "Isi Respon: $HTTP_BODY"
+          
+          if [ "$HTTP_STATUS" -ne 200 ]; then
+            echo "::error::Eksekusi bot gagal dengan HTTP code $HTTP_STATUS"
+            exit 1
+          fi
+          echo "Eksekusi tick berhasil diselesaikan."

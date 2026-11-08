@@ -1,0 +1,25 @@
+# Environment Variables & Secrets (CRITICAL FOR 15% SECURITY GRADE)
+.env
+.env.local
+.env.*.local
+*.secret
+*.token
+
+# Python Cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+
+# IDE & OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Vercel Build Artifacts
+.vercel/
